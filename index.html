@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoHábitos | Avaliação Ambiental</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f6f1;
+            color: #26352b;
+            margin: 0;
+        }
+
+        header {
+            background: #236b45;
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 760px;
+            margin: 25px auto;
+            padding: 0 16px;
+        }
+
+        section {
+            background: white;
+            padding: 22px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #0000000c;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: bold;
+        }
+
+        select, input, button {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        select, input {
+            border: 1px solid #ccd7cd;
+            background: white;
+        }
+
+        button {
+            margin-top: 18px;
+            border: none;
+            background: #236b45;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #194d32;
+        }
+
+        .pontuacao {
+            font-size: 32px;
+            color: #236b45;
+            font-weight: bold;
+        }
+
+        .atividade {
+            border-bottom: 1px solid #e5eae5;
+            padding: 12px 0;
+        }
+
+        .positiva { color: #238344; }
+        .neutra { color: #777777; }
+        .prejudicial { color: #c0392b; }
+
+        .vazia {
+            color: #6b756d;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🌱 EcoHábitos</h1>
+        <p>Avaliação Ambiental Pessoal</p>
+        <p>Pequenas atitudes, grandes mudanças.</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Minha pontuação</h2>
+
+            <div class="pontuacao">
+                {{ pontuacao }} pontos
+            </div>
+
+            <p>{{ atividades|length }} atividade(s) registrada(s)</p>
+        </section>
+
+        <section>
+            <h2>Registrar atividade</h2>
+
+            <form action="/registrar" method="POST">
+                <label for="tipo">Qual atividade você realizou?</label>
+
+                <select name="tipo" id="tipo" required>
+                    {% for chave, regra in regras.items() %}
+                        <option value="{{ chave }}">
+                            {{ regra.nome }}
+                            ({{ "%+d"|format(regra.pontos) }} pontos)
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="quantidade">
+                    Quantidade ou descrição
+                </label>
+
+                <input
+                    type="text"
+                    id="quantidade"
+                    name="quantidade"
+                    placeholder="Ex.: 5 km, 3 garrafas..."
+                    maxlength="100"
+                    required
+                >
+
+                <button type="submit">Registrar atividade</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Histórico de atividades</h2>
+
+            {% if atividades %}
+                {% for atividade in atividades|reverse %}
+                    <div class="atividade">
+                        <strong>{{ atividade.nome }}</strong>
+
+                        <p>
+                            {{ atividade.quantidade }}
+                        </p>
+
+                        <span class="{{
+                            'positiva' if atividade.pontos > 0
+                            else 'prejudicial' if atividade.pontos < 0
+                            else 'neutra'
+                        }}">
+                            {{ atividade.categoria }} ·
+                            {{ "%+d"|format(atividade.pontos) }} pontos
+                        </span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="vazia">
+                    Você ainda não registrou nenhuma atividade.
+                    Comece agora!
+                </p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
