@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo %}Entrar{% endblock %}
+
+{% block conteudo %}
+    <section>
+        <h2>Entrar</h2>
+
+        <form method="POST">
+            <label for="nome">Nome de usuário</label>
+            <input type="text" id="nome" name="nome" maxlength="30"
+                   autocomplete="username" required autofocus>
+
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha"
+                   autocomplete="current-password" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <p class="centro">
+            Ainda não tem conta? <a href="{{ url_for('cadastro') }}">Crie uma aqui</a>.
+        </p>
+    </section>
+{% endblock %}

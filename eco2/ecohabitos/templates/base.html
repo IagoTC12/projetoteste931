@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}EcoHábitos{% endblock %} | Avaliação Ambiental</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f6f1;
+            color: #26352b;
+            margin: 0;
+        }
+
+        header {
+            background: #236b45;
+            color: white;
+            padding: 28px 20px 18px;
+            text-align: center;
+        }
+
+        header h1 { margin: 0 0 6px; }
+        header p  { margin: 4px 0; }
+
+        nav {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover { text-decoration: underline; }
+
+        nav form { margin: 0; }
+
+        nav .link-botao {
+            width: auto;
+            margin: 0;
+            padding: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        nav .link-botao:hover { text-decoration: underline; background: none; }
+
+        main {
+            max-width: 760px;
+            margin: 25px auto;
+            padding: 0 16px;
+        }
+
+        section {
+            background: white;
+            padding: 22px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #0000000c;
+        }
+
+        section h2 { margin-top: 0; }
+
+        label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: bold;
+        }
+
+        select, input, button {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        select, input {
+            border: 1px solid #ccd7cd;
+            background: white;
+        }
+
+        button {
+            margin-top: 18px;
+            border: none;
+            background: #236b45;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover { background: #194d32; }
+
+        .mensagem {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .mensagem.sucesso { background: #e2f3e7; color: #1d5e35; }
+        .mensagem.erro    { background: #fbe4e1; color: #8e2a1f; }
+        .mensagem.aviso   { background: #fff4d6; color: #7a5a00; }
+
+        .pontuacao {
+            font-size: 32px;
+            color: #236b45;
+            font-weight: bold;
+        }
+
+        .pontuacao.negativa { color: #c0392b; }
+
+        .atividade {
+            border-bottom: 1px solid #e5eae5;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .atividade:last-child { border-bottom: none; }
+        .atividade p { margin: 6px 0; }
+
+        .atividade form { margin: 0; }
+
+        .botao-excluir {
+            width: auto;
+            margin: 0;
+            padding: 6px 10px;
+            font-size: 14px;
+            background: #eef1ee;
+            color: #6b756d;
+        }
+
+        .botao-excluir:hover { background: #fbe4e1; color: #c0392b; }
+
+        .data { font-size: 13px; color: #8a948c; }
+
+        .positiva    { color: #238344; }
+        .neutra      { color: #777777; }
+        .prejudicial { color: #c0392b; }
+
+        .vazia { color: #6b756d; }
+
+        .sugestao {
+            background: #fff8e6;
+            border-left: 4px solid #e2a400;
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .sugestao p { margin: 6px 0 0; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px 8px;
+            border-bottom: 1px solid #e5eae5;
+        }
+
+        tr.voce { background: #e2f3e7; font-weight: bold; }
+
+        .centro { text-align: center; }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🌱 EcoHábitos</h1>
+        <p>Avaliação Ambiental Pessoal</p>
+        <p>Pequenas atitudes, grandes mudanças.</p>
+
+        <nav>
+            {% if g.usuario %}
+                <span>Olá, {{ g.usuario.nome }}</span>
+                <a href="{{ url_for('inicio') }}">Minhas atividades</a>
+                <a href="{{ url_for('ranking') }}">Ranking</a>
+                <form action="{{ url_for('logout') }}" method="POST">
+                    <button type="submit" class="link-botao">Sair</button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('login') }}">Entrar</a>
+                <a href="{{ url_for('cadastro') }}">Criar conta</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% for categoria, texto in mensagens %}
+                <div class="mensagem {{ categoria }}">{{ texto }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block conteudo %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block titulo %}Ranking{% endblock %}
+
+{% block conteudo %}
+    <section>
+        <h2>🏆 Ranking de participantes</h2>
+
+        {% if usuarios %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Usuário</th>
+                        <th>Atividades</th>
+                        <th>Pontos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in usuarios %}
+                        <tr class="{{ 'voce' if u.id == g.usuario.id }}">
+                            <td>{{ loop.index }}</td>
+                            <td>{{ u.nome }}{% if u.id == g.usuario.id %} (você){% endif %}</td>
+                            <td>{{ u.total }}</td>
+                            <td class="{{ 'positiva' if u.pontuacao > 0 else 'prejudicial' if u.pontuacao < 0 else 'neutra' }}">
+                                {{ u.pontuacao }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="vazia">Ainda não há participantes.</p>
+        {% endif %}
+    </section>
+{% endblock %}

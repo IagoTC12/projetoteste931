@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block titulo %}Criar conta{% endblock %}
+
+{% block conteudo %}
+    <section>
+        <h2>Criar conta</h2>
+
+        <form method="POST">
+            <label for="nome">Nome de usuário (3 a 30 caracteres)</label>
+            <input type="text" id="nome" name="nome" minlength="3" maxlength="30"
+                   value="{{ request.form.get('nome', '') }}"
+                   autocomplete="username" required autofocus>
+
+            <label for="senha">Senha (mínimo 6 caracteres)</label>
+            <input type="password" id="senha" name="senha" minlength="6"
+                   autocomplete="new-password" required>
+
+            <label for="confirmar">Confirme a senha</label>
+            <input type="password" id="confirmar" name="confirmar" minlength="6"
+                   autocomplete="new-password" required>
+
+            <button type="submit">Criar conta</button>
+        </form>
+
+        <p class="centro">
+            Já tem conta? <a href="{{ url_for('login') }}">Entrar</a>.
+        </p>
+    </section>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block titulo %}Minhas atividades{% endblock %}
+
+{% block conteudo %}
+    <section>
+        <h2>Minha pontuação</h2>
+
+        <div class="pontuacao {{ 'negativa' if pontuacao < 0 }}">
+            {{ pontuacao }} pontos
+        </div>
+
+        <p>{{ atividades|length }} atividade(s) registrada(s)</p>
+    </section>
+
+    <section>
+        <h2>Registrar atividade</h2>
+
+        <form action="{{ url_for('registrar') }}" method="POST">
+            <label for="tipo">Qual atividade você realizou?</label>
+
+            <select name="tipo" id="tipo" required>
+                {% for chave, regra in regras.items() %}
+                    <option value="{{ chave }}">
+                        {{ regra.nome }} ({{ "%+d"|format(regra.pontos) }} pontos)
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="quantidade">Quantidade ou descrição</label>
+
+            <input
+                type="text"
+                id="quantidade"
+                name="quantidade"
+                placeholder="Ex.: 5 km, 3 garrafas..."
+                maxlength="100"
+                required
+            >
+
+            <button type="submit">Registrar atividade</button>
+        </form>
+    </section>
+
+    {% if sugestoes %}
+        <section>
+            <h2>💡 Sugestões para melhorar</h2>
+
+            {% for s in sugestoes %}
+                <div class="sugestao">
+                    <strong>{{ s.nome }}</strong>
+                    <p>{{ s.texto }}</p>
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <section>
+        <h2>Histórico de atividades</h2>
+
+        {% if atividades %}
+            {# As atividades já vêm do banco da mais nova para a mais antiga #}
+            {% for atividade in atividades %}
+                <div class="atividade">
+                    <div>
+                        <strong>{{ atividade.nome }}</strong>
+                        <p>{{ atividade.quantidade }}</p>
+
+                        {% set classe = 'positiva' if atividade.pontos > 0
+                                        else 'prejudicial' if atividade.pontos < 0
+                                        else 'neutra' %}
+                        <span class="{{ classe }}">
+                            {{ atividade.categoria }} · {{ "%+d"|format(atividade.pontos) }} pontos
+                        </span>
+                        <div class="data">{{ atividade.criado_em|data_br }}</div>
+                    </div>
+
+                    <form action="{{ url_for('excluir', atividade_id=atividade.id) }}" method="POST"
+                          onsubmit="return confirm('Remover esta atividade?');">
+                        <button type="submit" class="botao-excluir">Remover</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="vazia">
+                Você ainda não registrou nenhuma atividade. Comece agora!
+            </p>
+        {% endif %}
+    </section>
+{% endblock %}
